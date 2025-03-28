@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ thống Thông tin Sinh viên</title>
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f2f5;
+        padding: 20px;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    h1 {
+        text-align: center;
+        color: #1a73e8;
+        margin-bottom: 30px;
+    }
+
+    h2 {
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .form-container, .list-container {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+        color: #555;
+    }
+
+    input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    button {
+        background-color: #1a73e8;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        margin-right: 10px;
+    }
+
+    button:hover {
+        background-color: #1557b0;
+    }
+
+    .delete-btn {
+        background-color: #dc3545;
+    }
+
+    .delete-btn:hover {
+        background-color: #c82333;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    th, td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #f5f6fa;
+        color: #333;
+    }
+
+    tr:hover {
+        background-color: #f8f9fd;
+    }
+
+    .message {
+        padding: 10px;
+        margin-top: 10px;
+        border-radius: 4px;
+        display: none;
+    }
+
+    .success {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .error {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+</style>
+<body>
+<div class="container">
+    <h1>Hệ thống Thông tin Sinh viên</h1>
+
+    <!-- Form thêm sinh viên và điểm -->
+    <div class="form-container">
+        <h2>Thêm sinh viên và điểm</h2>
+        <form id="studentWithScoreForm">
+            <div class="form-group">
+                <label for="studentCode">Mã sinh viên:</label>
+                <input type="text" id="studentCode" required>
+            </div>
+            <div class="form-group">
+                <label for="fullName">Họ tên:</label>
+                <input type="text" id="fullName" required>
+            </div>
+            <div class="form-group">
+                <label for="address">Địa chỉ:</label>
+                <input type="text" id="address">
+            </div>
+            <div class="form-group">
+                <label for="subjectCode">Mã môn học:</label>
+                <input type="text" id="subjectCode" required>
+            </div>
+            <div class="form-group">
+                <label for="score1">Điểm 1:</label>
+                <input type="number" id="score1" step="0.1" min="0" max="10" required>
+            </div>
+            <div class="form-group">
+                <label for="score2">Điểm 2:</label>
+                <input type="number" id="score2" step="0.1" min="0" max="10" required>
+            </div>
+            <button type="submit">Thêm sinh viên và điểm</button>
+            <div id="message" class="message"></div>
+        </form>
+    </div>
+
+
+
+    <!-- Danh sách sinh viên và điểm -->
+    <div class="list-container">
+        <h2>Danh sách sinh viên và điểm</h2>
+        <table id="studentScoreTable">
+            <thead>
+            <tr>
+                <th>Mã SV</th>
+                <th>Họ tên</th>
+                <th>Địa chỉ</th>
+                <th>Mã môn</th>
+                <th>Tín chỉ</th>
+                <th>Điểm 1</th>
+                <th>Điểm 2</th>
+
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        loadStudents();
+        loadStudentScores();
+
+        // Thêm sinh viên và điểm
+        document.getElementById('studentWithScoreForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const data = {
+                student: {
+                    studentCode: document.getElementById('studentCode').value,
+                    fullName: document.getElementById('fullName').value,
+                    address: document.getElementById('address').value || null
+                },
+                subject: {
+                    subjectCode: document.getElementById('subjectCode').value
+                },
+                score1: parseFloat(document.getElementById('score1').value),
+                score2: parseFloat(document.getElementById('score2').value)
+            };
+
+            const messageDiv = document.getElementById('message');
+
+            try {
+                const response = await fetch('/api/student-with-score', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const responseText = await response.text();
+                if (response.ok) {
+                    document.getElementById('studentWithScoreForm').reset();
+                    loadStudents();
+                    loadStudentScores();
+                    messageDiv.textContent = 'Thêm sinh viên và điểm thành công!';
+                    messageDiv.className = 'message success';
+                    messageDiv.style.display = 'block';
+                    setTimeout(() => messageDiv.style.display = 'none', 3000);
+                } else {
+                    messageDiv.textContent = `Lỗi: ${responseText}`;
+                    messageDiv.className = 'message error';
+                    messageDiv.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                messageDiv.textContent = 'Đã xảy ra lỗi khi thêm dữ liệu!';
+                messageDiv.className = 'message error';
+                messageDiv.style.display = 'block';
+            }
+        });
+    });
+
+    async function loadStudents() {
+        try {
+            const response = await fetch('/api/students');
+            if (!response.ok) throw new Error('Lỗi khi tải danh sách sinh viên');
+            const students = await response.json();
+            const tbody = document.querySelector('#studentTable tbody');
+            tbody.innerHTML = '';
+
+            students.forEach(student => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                <td>${student.studentCode}</td>
+                <td>${student.fullName}</td>
+                <td>${student.address || ''}</td>
+                <td>
+                    <button onclick="editStudent('${student.studentCode}')">Sửa</button>
+                    <button class="delete-btn" onclick="deleteStudent('${student.studentCode}')">Xóa</button>
+                </td>
+            `;
+                tbody.appendChild(row);
+            });
+        } catch (error) {
+            console.error('Error loading students:', error);
+        }
+    }
+
+    async function loadStudentScores() {
+        try {
+            const response = await fetch('/api/student-scores');
+            if (!response.ok) throw new Error('Lỗi khi tải danh sách điểm');
+            const scores = await response.json();
+            const tbody = document.querySelector('#studentScoreTable tbody');
+            tbody.innerHTML = '';
+
+            scores.forEach(score => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                <td>${score.student.studentCode}</td>
+                <td>${score.student.fullName}</td>
+                <td>${score.student.address || ''}</td>
+                <td>${score.subject.subjectCode}</td>
+
+                <td>${score.subject.credit}</td>
+                <td>${score.score1}</td>
+                <td>${score.score2}</td>
+                <td>
+                    <button onclick="editStudentScore(${score.studentScoreId})">Sửa</button>
+                    <button class="delete-btn" onclick="deleteStudentScore(${score.studentScoreId})">Xóa</button>
+                </td>
+            `;
+                tbody.appendChild(row);
+            });
+        } catch (error) {
+            console.error('Error loading student scores:', error);
+        }
+    }
+
+    // Xóa sinh viên
+    async function deleteStudent(studentCode) {
+        if (confirm('Bạn có chắc muốn xóa sinh viên này?')) {
+            try {
+                const response = await fetch(`/api/students/${studentCode}`, {
+                    method: 'DELETE'
+                });
+                const responseText = await response.text();
+                if (response.ok) {
+                    loadStudents();
+                    loadStudentScores();
+                    alert('Xóa sinh viên thành công!');
+                } else {
+                    alert(`Lỗi: ${responseText}`);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Đã xảy ra lỗi khi xóa sinh viên!');
+            }
+        }
+    }
+
+    // Xóa điểm
+    async function deleteStudentScore(studentScoreId) {
+        if (confirm('Bạn có chắc muốn xóa điểm này?')) {
+            try {
+                const response = await fetch(`/api/student-scores/${studentScoreId}`, {
+                    method: 'DELETE'
+                });
+                const responseText = await response.text();
+                if (response.ok) {
+                    loadStudentScores();
+                    alert('Xóa điểm thành công!');
+                } else {
+                    alert(`Lỗi: ${responseText}`);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Đã xảy ra lỗi khi xóa điểm!');
+            }
+        }
+    }
+
+    // Sửa sinh viên
+    async function editStudent(studentCode) {
+        const response = await fetch(`/api/students/${studentCode}`);
+        const student = await response.json();
+
+        const newFullName = prompt('Nhập họ tên mới:', student.fullName);
+        const newAddress = prompt('Nhập địa chỉ mới:', student.address || '');
+
+        if (newFullName && newAddress !== null) {
+            const updatedStudent = {
+                studentCode: studentCode,
+                fullName: newFullName,
+                address: newAddress || null
+            };
+
+            try {
+                const updateResponse = await fetch(`/api/students/${studentCode}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(updatedStudent)
+                });
+                const responseText = await updateResponse.text();
+                if (updateResponse.ok) {
+                    loadStudents();
+                    loadStudentScores();
+                    alert('Cập nhật sinh viên thành công!');
+                } else {
+                    alert(`Lỗi: ${responseText}`);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Đã xảy ra lỗi khi cập nhật sinh viên!');
+            }
+        }
+    }
+
+    // Sửa điểm
+    async function editStudentScore(studentScoreId) {
+        const response = await fetch(`/api/student-scores/${studentScoreId}`);
+        const score = await response.json();
+
+        const newScore1 = prompt('Nhập điểm 1 mới:', score.score1);
+        const newScore2 = prompt('Nhập điểm 2 mới:', score.score2);
+
+        if (newScore1 && newScore2) {
+            const updatedScore = {
+                studentScoreId: studentScoreId,
+                student: score.student,
+                subject: score.subject,
+                score1: parseFloat(newScore1),
+                score2: parseFloat(newScore2)
+            };
+
+            try {
+                const updateResponse = await fetch(`/api/student-scores/${studentScoreId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(updatedScore)
+                });
+                const responseText = await updateResponse.text();
+                if (updateResponse.ok) {
+                    loadStudentScores();
+                    alert('Cập nhật điểm thành công!');
+                } else {
+                    alert(`Lỗi: ${responseText}`);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Đã xảy ra lỗi khi cập nhật điểm!');
+            }
+        }
+    }
+</script>
+</body>
+</html>
