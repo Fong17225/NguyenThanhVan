@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Information System</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .header {
+            background-color: #343a40;
+            color: white;
+            padding: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .btn-custom {
+            margin-right: 10px;
+        }
+        .table th {
+            background-color: #343a40;
+            color: white;
+        }
+        .table td, .table th {
+            vertical-align: middle;
+        }
+        .action-buttons button {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        <h3>STUDENT INFORMATION SYSTEM</h3>
+    </div>
+
+    <!-- Nút mở modal -->
+    <div class="mb-3">
+        <button class="btn btn-success btn-custom" data-bs-toggle="modal" data-bs-target="#addStudentModal">
+            + Student
+        </button>
+        <button class="btn btn-success btn-custom" data-bs-toggle="modal" data-bs-target="#addSubjectModal">
+            + Subject
+        </button>
+        <button class="btn btn-success btn-custom" data-bs-toggle="modal" data-bs-target="#addScoreModal">
+            + Score
+        </button>
+    </div>
+
+    <!-- Bảng hiển thị thông tin -->
+    <div>
+        <table class="table table-bordered table-striped" id="studentInfoTable">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Student Id</th>
+                <th>Student Name</th>
+                <th>Subject Name</th>
+                <th>Score 1</th>
+                <th>Score 2</th>
+                <th>Credit</th>
+                <th>Grade</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal thêm Student -->
+<div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addStudentModalLabel">Add New Student</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="studentForm">
+                    <div class="mb-3">
+                        <label for="studentCode" class="form-label">Student Code</label>
+                        <input type="text" class="form-control" id="studentCode" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="fullName" class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="fullName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="address" class="form-label">Address</label>
+                        <input type="text" class="form-control" id="address">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Student</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal thêm Subject -->
+<div class="modal fade" id="addSubjectModal" tabindex="-1" aria-labelledby="addSubjectModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addSubjectModalLabel">Add New Subject</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="subjectForm">
+                    <div class="mb-3">
+                        <label for="subjectCode" class="form-label">Subject Code</label>
+                        <input type="text" class="form-control" id="subjectCode" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="subjectName" class="form-label">Subject Name</label>
+                        <input type="text" class="form-control" id="subjectName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="credit" class="form-label">Credit</label>
+                        <input type="number" class="form-control" id="credit" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Subject</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal thêm Score -->
+<div class="modal fade" id="addScoreModal" tabindex="-1" aria-labelledby="addScoreModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addScoreModalLabel">Add Student Score</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="scoreForm">
+                    <div class="mb-3">
+                        <label for="studentSelect" class="form-label">Student</label>
+                        <select class="form-control" id="studentSelect" required>
+                            <option value="">Select a student</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="subjectSelect" class="form-label">Subject</label>
+                        <select class="form-control" id="subjectSelect" required>
+                            <option value="">Select a subject</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="score1" class="form-label">Score 1</label>
+                        <input type="number" step="0.1" class="form-control" id="score1" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="score2" class="form-label">Score 2</label>
+                        <input type="number" step="0.1" class="form-control" id="score2" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Score</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Container để tải modal chỉnh sửa -->
+<div id="editModalContainer"></div>
+
+<!-- Bootstrap 5 JS and Popper.js -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+<!-- JavaScript để gọi API -->
+<script>
+    const API_BASE_URL = 'http://localhost:8080/api';
+
+    // Load edit modal dynamically
+    async function loadEditModal() {
+        try {
+            const response = await fetch('editModal.html');
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const modalHTML = await response.text();
+            document.getElementById('editModalContainer').innerHTML = modalHTML;
+
+            // Attach event listener for edit form after loading
+            const editForm = document.getElementById('editForm');
+            if (editForm) {
+                editForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const scoreId = document.getElementById('editScoreId').value;
+                    const studentId = document.getElementById('editStudentId').value;
+                    const studentCode = document.getElementById('editStudentCode').value;
+                    const fullName = document.getElementById('editStudentName').value;
+                    const address = document.getElementById('editAddress').value;
+                    const subjectId = document.getElementById('editSubjectSelect').value;
+                    const score1 = parseFloat(document.getElementById('editScore1').value);
+                    const score2 = parseFloat(document.getElementById('editScore2').value);
+
+                    // Update Student
+                    const studentUpdate = {
+                        studentId: parseInt(studentId),
+                        studentCode: studentCode,
+                        fullName: fullName,
+                        address: address
+                    };
+
+                    // Update Score
+                    const scoreUpdate = {
+                        studentScoreId: parseInt(scoreId),
+                        student: { studentId: parseInt(studentId) },
+                        subject: { subjectId: parseInt(subjectId) },
+                        score1: score1,
+                        score2: score2
+                    };
+
+                    console.log('Updating student:', studentUpdate);
+                    console.log('Updating score:', scoreUpdate);
+
+                    try {
+                        // Update student
+                        const studentResponse = await fetch(`${API_BASE_URL}/students/${studentId}`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(studentUpdate)
+                        });
+
+                        if (!studentResponse.ok) {
+                            const error = await studentResponse.text();
+                            console.error('Failed to update student:', error);
+                            alert('Failed to update student: ' + error);
+                            return;
+                        }
+
+                        // Update score
+                        const scoreResponse = await fetch(`${API_BASE_URL}/scores/${scoreId}`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(scoreUpdate)
+                        });
+
+                        if (scoreResponse.ok) {
+                            alert('Student, score, and subject updated successfully!');
+                            fetchStudentInfo(); // Refresh table
+                            const modal = bootstrap.Modal.getInstance(document.getElementById('editModal'));
+                            modal.hide();
+                        } else {
+                            const error = await scoreResponse.text();
+                            console.error('Failed to update score:', error);
+                            alert('Failed to update score: ' + error);
+                        }
+                    } catch (error) {
+                        console.error('Error updating student and score:', error);
+                        alert('An error occurred while updating');
+                    }
+                });
+            } else {
+                console.error('editForm not found after loading modal');
+            }
+        } catch (error) {
+            console.error('Error loading edit modal:', error);
+        }
+    }
+
+    // Load data when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log('Page loaded, fetching student info...');
+        loadEditModal(); // Load edit modal
+        fetchStudentInfo();
+        populateStudentDropdown();
+        populateSubjectDropdown();
+        populateEditSubjectDropdown();
+    });
+
+    // Handle student form submission
+    document.getElementById('studentForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const student = {
+            studentCode: document.getElementById('studentCode').value,
+            fullName: document.getElementById('fullName').value,
+            address: document.getElementById('address').value
+        };
+
+        console.log('Adding student:', student);
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/students`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(student)
+            });
+            if (response.ok) {
+                alert('Student added successfully!');
+                document.getElementById('studentForm').reset();
+                const modal = bootstrap.Modal.getInstance(document.getElementById('addStudentModal'));
+                modal.hide();
+                populateStudentDropdown(); // Refresh student dropdown
+            } else {
+                const error = await response.text();
+                console.error('Failed to add student:', error);
+                alert('Failed to add student: ' + error);
+            }
+        } catch (error) {
+            console.error('Error adding student:', error);
+            alert('An error occurred while adding student');
+        }
+    });
+
+    // Handle subject form submission
+    document.getElementById('subjectForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const subject = {
+            subjectCode: document.getElementById('subjectCode').value,
+            subjectName: document.getElementById('subjectName').value,
+            credit: parseInt(document.getElementById('credit').value)
+        };
+
+        console.log('Adding subject:', subject);
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/subjects`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(subject)
+            });
+            if (response.ok) {
+                alert('Subject added successfully!');
+                document.getElementById('subjectForm').reset();
+                const modal = bootstrap.Modal.getInstance(document.getElementById('addSubjectModal'));
+                modal.hide();
+                populateSubjectDropdown(); // Refresh subject dropdown
+                populateEditSubjectDropdown(); // Refresh edit subject dropdown
+            } else {
+                const error = await response.text();
+                console.error('Failed to add subject:', error);
+                alert('Failed to add subject: ' + error);
+            }
+        } catch (error) {
+            console.error('Error adding subject:', error);
+            alert('An error occurred while adding subject');
+        }
+    });
+
+    // Handle score form submission
+    document.getElementById('scoreForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const score = {
+            student: { studentId: parseInt(document.getElementById('studentSelect').value) },
+            subject: { subjectId: parseInt(document.getElementById('subjectSelect').value) },
+            score1: parseFloat(document.getElementById('score1').value),
+            score2: parseFloat(document.getElementById('score2').value)
+        };
+
+        console.log('Adding score:', score);
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/scores`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(score)
+            });
+            if (response.ok) {
+                alert('Score added successfully!');
+                fetchStudentInfo(); // Refresh table
+                document.getElementById('scoreForm').reset();
+                const modal = bootstrap.Modal.getInstance(document.getElementById('addScoreModal'));
+                modal.hide();
+            } else {
+                const error = await response.text();
+                console.error('Failed to add score:', error);
+                alert('Failed to add score: ' + error);
+            }
+        } catch (error) {
+            console.error('Error adding score:', error);
+            alert('An error occurred while adding score');
+        }
+    });
+
+    // Fetch and display student info (scores)
+    async function fetchStudentInfo() {
+        try {
+            console.log('Fetching scores from:', `${API_BASE_URL}/scores`);
+            const response = await fetch(`${API_BASE_URL}/scores`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const scores = await response.json();
+            console.log('Scores received:', scores);
+
+            const tbody = document.querySelector('#studentInfoTable tbody');
+            tbody.innerHTML = '';
+            if (!scores || scores.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" class="text-center">No scores available. Please add a score.</td></tr>';
+                return;
+            }
+
+            scores.forEach((score, index) => {
+                const studentCode = score.student && score.student.studentCode ? score.student.studentCode : 'N/A';
+                const fullName = score.student && score.student.fullName ? score.student.fullName : 'N/A';
+                const address = score.student && score.student.address ? score.student.address : 'N/A';
+                const subjectName = score.subject && score.subject.subjectName ? score.subject.subjectName : 'N/A';
+                const subjectId = score.subject && score.subject.subjectId ? score.subject.subjectId : '';
+                const credit = score.subject && score.subject.credit ? score.subject.credit : 'N/A';
+                const score1 = score.score1 !== undefined ? score.score1 : 'N/A';
+                const score2 = score.score2 !== undefined ? score.score2 : 'N/A';
+                const grade = score.grade || 'N/A';
+
+                const row = `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${studentCode}</td>
+                        <td>${fullName}</td>
+                        <td>${subjectName}</td>
+                        <td>${score1}</td>
+                        <td>${score2}</td>
+                        <td>${credit}</td>
+                        <td>${grade}</td>
+                        <td class="action-buttons">
+                            <button class="btn btn-sm btn-warning" onclick="openEditModal(${score.studentScoreId}, ${score.student.studentId}, '${studentCode}', '${fullName}', '${address}', ${subjectId}, ${score1}, ${score2})">Edit</button>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        } catch (error) {
+            console.error('Error fetching student info:', error);
+            const tbody = document.querySelector('#studentInfoTable tbody');
+            tbody.innerHTML = '<tr><td colspan="9" class="text-center">Error loading scores</td></tr>';
+        }
+    }
+
+    // Populate student dropdown
+    async function populateStudentDropdown() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/students`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const students = await response.json();
+            const studentSelect = document.getElementById('studentSelect');
+            studentSelect.innerHTML = '<option value="">Select a student</option>';
+            students.forEach(student => {
+                const option = document.createElement('option');
+                option.value = student.studentId;
+                option.textContent = student.fullName;
+                studentSelect.appendChild(option);
+            });
+        } catch (error) {
+            console.error('Error fetching students for dropdown:', error);
+        }
+    }
+
+    // Populate subject dropdown for adding score
+    async function populateSubjectDropdown() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/subjects`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const subjects = await response.json();
+            const subjectSelect = document.getElementById('subjectSelect');
+            subjectSelect.innerHTML = '<option value="">Select a subject</option>';
+            subjects.forEach(subject => {
+                const option = document.createElement('option');
+                option.value = subject.subjectId;
+                option.textContent = subject.subjectName;
+                subjectSelect.appendChild(option);
+            });
+        } catch (error) {
+            console.error('Error fetching subjects for dropdown:', error);
+        }
+    }
+
+    // Populate subject dropdown for editing
+    async function populateEditSubjectDropdown() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/subjects`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const subjects = await response.json();
+            const editSubjectSelect = document.getElementById('editSubjectSelect');
+            if (editSubjectSelect) {
+                editSubjectSelect.innerHTML = '<option value="">Select a subject</option>';
+                subjects.forEach(subject => {
+                    const option = document.createElement('option');
+                    option.value = subject.subjectId;
+                    option.textContent = subject.subjectName;
+                    editSubjectSelect.appendChild(option);
+                });
+            } else {
+                console.error('editSubjectSelect element not found');
+            }
+        } catch (error) {
+            console.error('Error fetching subjects for edit dropdown:', error);
+        }
+    }
+
+    // Function to open edit modal with pre-filled data
+    function openEditModal(scoreId, studentId, studentCode, fullName, address, subjectId, score1, score2) {
+        const editModal = document.getElementById('editModal');
+        if (!editModal) {
+            console.error('Edit modal not found');
+            return;
+        }
+
+        document.getElementById('editScoreId').value = scoreId;
+        document.getElementById('editStudentId').value = studentId;
+        document.getElementById('editStudentCode').value = studentCode;
+        document.getElementById('editStudentName').value = fullName;
+        document.getElementById('editAddress').value = address;
+        document.getElementById('editSubjectSelect').value = subjectId;
+        document.getElementById('editScore1').value = score1;
+        document.getElementById('editScore2').value = score2;
+
+        const modal = new bootstrap.Modal(editModal);
+        modal.show();
+    }
+</script>
+</body>
+</html>
